@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VaultBI</title>
+  <style>
+    body {
+      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 2rem 0;
+      background-color: #f5f7fa;
+      color: #1a3a3a;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: #008080;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    h1 .logo {
+      height: 2rem;
+      width: 2rem;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+    p {
+      font-size: 1.15rem;
+      color: #3a5a5a;
+      margin-bottom: 2rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      font-style: italic; /* Add this line */
+    }
+    .container {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #b2dfdb;
+      border-radius: 14px;
+      padding: 2rem 1.5rem;
+      flex: 1 1 0;
+      min-width: 280px;
+      min-height: 320px;
+      box-shadow: 0 2px 16px rgba(0,128,128,0.06);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      transition: box-shadow 0.2s, border 0.2s;
+    }
+    .card:hover {
+      box-shadow: 0 4px 24px rgba(0,128,128,0.12);
+      border: 1.5px solid #26a69a;
+    }
+    textarea, input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #b2dfdb;
+      border-radius: 6px;
+      background: #f9fafb;
+      transition: border 0.2s;
+      color: #1a3a3a;
+    }
+    textarea:focus, input:focus {
+      border-color: #008080;
+      outline: none;
+    }
+    button {
+      background: #008080;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 1px 4px rgba(0,128,128,0.08);
+    }
+    button:hover, button:focus {
+      background: #26a69a;
+    }
+    #dropzone {
+      border: 2px dashed #26a69a;
+      background: #e0f7fa;
+      color: #008080;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+    #dropzone:hover, #dropzone:focus {
+      border-color: #008080;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,128,128,0.04);
+    }
+    th, td {
+      border: 1px solid #b2dfdb;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #e0f7fa;
+      font-weight: 600;
+      color: #008080;
+    }
+    #copilot-sql {
+      margin-top: 0.75rem;
+      background: #e0f7fa;
+      color: #006d6d;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.95em;
+      white-space: pre-wrap;
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+    }
+    .logo-topright {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      height: 3rem;
+      width: 3rem;
+      z-index: 10;
+    }
+    .logo-bottomleft {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 2rem;
+      height: 3rem;
+      width: 3rem;
+      z-index: 10;
+      opacity: 0.7; /* Optional: make it subtle */
+      cursor: pointer; /* Optional: show it's clickable */
+      transition: opacity 0.2s;
+    }
+    .logo-bottomleft:hover {
+      opacity: 1;
+    }
+    .logo-topleft {
+      display: none;
+      /* position: absolute;
+      top: 1.5rem;
+      left: 2rem;
+      height: 3rem;
+      width: 3rem;
+      z-index: 10;
+      opacity: 0.85;
+      transition: opacity 0.2s; */
+    }
+    .logo-topleft:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <img src="imgs/vbii.png" alt="VaultBI Logo" class="logo-topleft" />
+  <h1>
+    VaultBI
+  </h1>
+  <p>Private. Local-first. DuckDB SQL Dashboards.</p>
+
+  <div class="container">
+    <!-- File upload + schema -->
+    <div class="card">
+      <h2>Upload CSV</h2>
+      <div id="dropzone">Drag & drop a CSV file here</div>
+      <div id="csvPath" style="font-size: 0.9em; color: gray;"></div>
+      <div id="schema" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <!-- SQL query + result -->
+    <div class="card">
+      <h2>Query</h2>
+      <textarea id="sql" rows="6" placeholder="SELECT * FROM uploaded;"></textarea>
+      <button onclick="runQuery()">Run SQL</button>
+    </div>
+
+    <!-- Copilot -->
+    <div class="card">
+      <h2>Copilot</h2>
+      <input id="nlq" placeholder="e.g. total sales by region">
+      <button onclick="askCopilot()">Suggest SQL</button>
+      <pre id="copilot-sql" style="margin-top:0.75rem; background:#e0f7fa; color:#006d6d; padding:0.5rem; border-radius:4px; font-size:0.95em; white-space:pre-wrap;"></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Results</h2>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    let csvPath = "";
+
+    const dropzone = document.getElementById("dropzone");
+    dropzone.addEventListener("dragover", e => e.preventDefault());
+    dropzone.addEventListener("drop", async e => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: form });
+      const data = await res.json();
+      csvPath = data.csvPath;
+      document.getElementById("csvPath").innerText = `Uploaded: ${csvPath}`;
+
+      // fetch schema
+      const schemaRes = await fetch("/api/query", {
+        method: "POST",
+        body: new URLSearchParams({
+          csvPath, sql: "PRAGMA table_info('uploaded')"
+        })
+      });
+      const schemaData = await schemaRes.json();
+      const schemaEl = document.getElementById("schema");
+      schemaEl.innerHTML = "<b>Detected Schema:</b><br>" + schemaData.map(row =>
+        `${row.name}: ${row.type}`).join("<br>");
+    });
+
+    async function runQuery() {
+      const sql = document.getElementById("sql").value;
+      const res = await fetch("/api/query", {
+        method: "POST",
+        body: new URLSearchParams({ csvPath, sql })
+      });
+      const data = await res.json();
+      renderTable(data);
+    }
+
+    async function askCopilot() {
+      const question = document.getElementById("nlq").value;
+      const schemaText = document.getElementById("schema").innerText.replace("Detected Schema:\n", "");
+
+      const res = await fetch("/api/llm/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ schema: schemaText, question })
+      });
+      const data = await res.json();
+      document.getElementById("sql").value = data.sql;
+      document.getElementById("copilot-sql").textContent = data.sql; // <-- Add this line
+    }
+
+    function renderTable(rows) {
+      const result = document.getElementById("result");
+      result.innerHTML = "";
+      if (rows.length === 0) return;
+
+      const table = document.createElement("table");
+      const header = document.createElement("tr");
+      Object.keys(rows[0]).forEach(col => {
+        const th = document.createElement("th");
+        th.textContent = col;
+        header.appendChild(th);
+      });
+      table.appendChild(header);
+
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        Object.values(row).forEach(val => {
+          const td = document.createElement("td");
+          td.textContent = val;
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+
+      result.appendChild(table);
+    }
+  </script>
+</body>
+</html>
