@@ -82,35 +82,11 @@ ___
 
 ---
 
-## Project Structure
-
-```
-src/
-  main/
-    java/
-      com/vaultbi/vaultbi/
-        controller/
-          CopilotController.java
-          QueryController.java
-    resources/
-      static/
-        index.html
-        duck-vault.png
-```
-
----
-
 ## Configuration
 
 - **Copilot LLM:**  
   The Copilot feature uses `llama.cpp` and a local model.  
   Update the model path and llama binary path in `CopilotController.java` as needed.
-
----
-
-## License
-
-MIT License
 
 ---
 
