@@ -1,4 +1,4 @@
-<img src="src/main/resources/static/imgs/vaultbi0.png" alt="VaultBI Screenshot" width="100%" height="300"/>
+<img src="src/main/resources/static/imgs/vaultbi0.png" alt="VaultBI Screenshot" width="100%" height="500"/>
 
 # VaultBI
 
