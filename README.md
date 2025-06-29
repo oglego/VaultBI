@@ -49,7 +49,21 @@
     ```
     http://localhost:8080
     ```
+___
+## Docker
 
+1. **Maven**
+    ```bash
+    mvn clean package
+    ```
+2. **Build**
+    ```bash
+    docker build -t vaultbi .
+    ```
+3. **Run**
+    ```bash
+    docker run -p 8080:8080 --rm vaultbi
+    ```
 ---
 
 ## Usage
