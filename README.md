@@ -94,7 +94,6 @@ ___
 
 - [DuckDB](https://duckdb.org/)
 - [llama.cpp](https://github.com/ggerganov/llama.cpp)
-- UI inspired by modern dashboard design trends
 
 ---
 
